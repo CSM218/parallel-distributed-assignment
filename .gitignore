@@ -70,12 +70,17 @@ TEST_REPORT_AND_ISSUES.md
 DEPLOYMENT_REPORT.md
 DEPLOYMENT_COMPLETE.md
 FILE_INVENTORY.md
-GENERATION_SUMMARY.md
+GENERATION_SUMMARY.txt
 FINAL_STATUS.txt
+README_AUTOGRADER.md
 
-# Testing scripts
+# Testing & Setup scripts
 test_and_push.sh
 verify_setup.py
+setup.sh
+classroom_setup.sh
+rubric.json
 
-# GitHub Actions workflow logs
+# GitHub Actions workflow logs and old workflows
 .github/workflows/logs/
+.github/workflows/autograde.yml

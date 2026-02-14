@@ -6,61 +6,29 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * JUnit 5 tests for the Worker class.
- * Tests worker functionality and data processing.
+ * Tests worker lifecycle and asynchronous behaviors.
  */
 class WorkerTest {
 
     private Worker worker;
-    private int[][] testData;
 
     @BeforeEach
     void setUp() {
-        worker = new Worker(1);
-        testData = new int[][] { { 1, 2 }, { 3, 4 } };
+        worker = new Worker();
     }
 
     @Test
-    void testWorkerCreation() {
-        assertNotNull(worker, "Worker should be created successfully");
-        assertEquals(1, worker.getWorkerId(), "Worker ID should be 1");
-    }
-
-    @Test
-    void testAssignData() {
-        worker.assignData(testData);
-        assertNotNull(worker.getResult() == null || worker.getResult() != null,
-                "Worker should accept data assignment");
-    }
-
-    @Test
-    void testProcessData() {
-        worker.assignData(testData);
-        Object result = worker.processData();
-        // Result can be null if not implemented, but should not throw exception
+    void testWorker_Join_Logic() {
         assertDoesNotThrow(() -> {
-            worker.assignData(testData);
-            worker.processData();
-        }, "Processing should not throw an exception");
+            // Should attempt to connect but handle failures gracefully
+            worker.joinCluster("localhost", 9999);
+        }, "Worker join logic should handle network absence gracefully");
     }
 
     @Test
-    void testGetResult() {
-        worker.assignData(testData);
-        worker.processData();
-        Object result = worker.getResult();
-        // Result should be retrievable without throwing exception
-        assertDoesNotThrow(() -> worker.getResult(),
-                "Getting result should not throw an exception");
-    }
-
-    @Test
-    void testMultipleWorkers() {
-        Worker worker1 = new Worker(1);
-        Worker worker2 = new Worker(2);
-
-        assertEquals(1, worker1.getWorkerId(), "Worker 1 ID should be 1");
-        assertEquals(2, worker2.getWorkerId(), "Worker 2 ID should be 2");
-        assertNotEquals(worker1.getWorkerId(), worker2.getWorkerId(),
-                "Workers should have different IDs");
+    void testWorker_Execute_Invocation() {
+        assertDoesNotThrow(() -> {
+            worker.execute();
+        }, "Worker execute should be a non-blocking invocation of the processing loop");
     }
 }
