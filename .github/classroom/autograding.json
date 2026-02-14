@@ -88,7 +88,7 @@
       "output": "[CLASSROOM_TAG] PARALLEL_MATRIX_MULTIPLY PASSED",
       "comparison": "included",
       "timeout": 20,
-      "points": 20
+      "points": 15
     },
     {
       "name": "10 Fault Tolerance & Recovery [FAIL-1]",
@@ -98,7 +98,7 @@
       "output": "[CLASSROOM_TAG] RECOVERY_MECHANISM PASSED",
       "comparison": "included",
       "timeout": 20,
-      "points": 15
+      "points": 10
     },
     {
       "name": "11 Framework Restriction Compliance [COORD-1]",
@@ -108,17 +108,27 @@
       "output": "[CLASSROOM_TAG] NO_EXTERNAL_FRAMEWORKS PASSED",
       "comparison": "included",
       "timeout": 5,
+      "points": 5
+    },
+    {
+      "name": "12 Invisible Jumbo Payload Robustness [HIDDEN-1]",
+      "setup": "",
+      "run": "bash autograder/run_autograder.sh --suite Hidden",
+      "input": "",
+      "output": "[CLASSROOM_TAG] HIDDEN_JUMBO_PAYLOAD PASSED",
+      "comparison": "included",
+      "timeout": 10,
       "points": 10
     },
     {
-      "name": "12 Advanced Coordination Handshake [COORD-2]",
+      "name": "13 Invisible Cluster Byzantine Resilience [HIDDEN-2]",
       "setup": "",
-      "run": "bash autograder/run_autograder.sh --suite Advanced --type dynamic",
+      "run": "bash autograder/run_autograder.sh --suite Hidden",
       "input": "",
-      "output": "[CLASSROOM_TAG] ADVANCED_HANDSHAKE PASSED",
+      "output": "[CLASSROOM_TAG] HIDDEN_FAULT_TOLERANCE PASSED",
       "comparison": "included",
       "timeout": 10,
-      "points": 5
+      "points": 10
     }
   ]
 }

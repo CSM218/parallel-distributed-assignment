@@ -83,4 +83,4 @@ rubric.json
 
 # GitHub Actions workflow logs and old workflows
 .github/workflows/logs/
-.github/workflows/autograde.yml
+.github/workflows/autograde.ymlautograder/tests/test_hidden_robustness.py

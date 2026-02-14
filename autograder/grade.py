@@ -28,6 +28,14 @@ from test_protocol_structure import ProtocolStructureTest
 from test_concurrency import ConcurrencyTest
 from test_advanced_protocol import AdvancedProtocolTest
 
+# Hidden Test Detection (Only runs if injected during CI)
+HIDDEN_TEST_AVAILABLE = False
+try:
+    from test_hidden_robustness import HiddenRobustnessTest
+    HIDDEN_TEST_AVAILABLE = True
+except ImportError:
+    pass
+
 class Grader:
     def __init__(self):
         self.results = {}
@@ -109,6 +117,9 @@ class Grader:
             ("Concurrency", ConcurrencyTest()),
             ("Advanced", AdvancedProtocolTest()),
         ]
+        
+        if HIDDEN_TEST_AVAILABLE:
+            test_suites.append(("Hidden", HiddenRobustnessTest()))
         
         if filter_suite:
             test_suites = [s for s in test_suites if s[0] == filter_suite]
