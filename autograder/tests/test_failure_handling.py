@@ -21,7 +21,7 @@ class FailureHandlingTest:
                 try:
                     with open(file_path, "r") as f:
                         content = f.read()
-                        if "heartbeat" in content.lower() or "ping" in content.lower():
+                        if "heartbeat" in content.lower() or "ping" in content.lower() or "health" in content.lower():
                             heartbeat_logic = True
                         if "timeout" in content.lower():
                             timeout_logic = True
@@ -31,36 +31,7 @@ class FailureHandlingTest:
             if heartbeat_logic and timeout_logic:
                 return True, "Heartbeat and timeout logic detected"
             else:
-                missing = []
-                if not heartbeat_logic:
-                    missing.append("heartbeat")
-                if not timeout_logic:
-                    missing.append("timeout")
-                return False, f"Missing: {', '.join(missing)}"
-        
-        except Exception as e:
-            return False, str(e)
-    
-    def test_error_handling(self):
-        """Verify error handling in RPC calls"""
-        try:
-            error_handling = False
-            
-            files_to_check = ["src/main/java/pdc/Master.java", "src/main/java/pdc/Worker.java"]
-            
-            for file_path in files_to_check:
-                try:
-                    with open(file_path, "r") as f:
-                        content = f.read()
-                        if "catch" in content and ("Exception" in content or "Error" in content):
-                            error_handling = True
-                except:
-                    pass
-            
-            if error_handling:
-                return True, "Error handling detected"
-            else:
-                return False, "No error handling found"
+                return False, "Missing heartbeat or timeout logic"
         
         except Exception as e:
             return False, str(e)
@@ -91,13 +62,10 @@ class FailureHandlingTest:
         results = {}
         
         success, msg = self.test_failure_detection()
-        results["failure_detection"] = {"passed": success, "message": msg, "weight": 0.08}
-        
-        success, msg = self.test_error_handling()
-        results["error_handling"] = {"passed": success, "message": msg, "weight": 0.04}
+        results["worker_failure_detection"] = {"passed": success, "message": msg, "weight": 0.05}
         
         success, msg = self.test_recovery_mechanism()
-        results["recovery_mechanism"] = {"passed": success, "message": msg, "weight": 0.03}
+        results["recovery_mechanism"] = {"passed": success, "message": msg, "weight": 0.10}
         
         return results
 

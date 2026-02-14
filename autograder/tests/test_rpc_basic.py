@@ -121,13 +121,13 @@ print(json.dumps(msg))
         results["compilation"] = {"passed": success, "message": msg, "weight": 0.05}
         
         success, msg = self.check_socket_communication()
-        results["socket_ipc"] = {"passed": success, "message": msg, "weight": 0.20}
+        results["socket_ipc"] = {"passed": success, "message": msg, "weight": 0.10}
         
         success, msg = self.check_rpc_abstraction()
-        results["rpc_abstraction"] = {"passed": success, "message": msg, "weight": 0.20}
+        results["rpc_abstraction"] = {"passed": success, "message": msg, "weight": 0.10}
         
         success, msg = self.check_protocol_schema()
-        results["protocol_schema"] = {"passed": success, "message": msg, "weight": 0.15}
+        results["protocol_schema"] = {"passed": success, "message": msg, "weight": 0.05}
         
         return results
 

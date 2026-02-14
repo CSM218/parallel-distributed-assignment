@@ -33,6 +33,10 @@ jobs:
           STUDENT_ID: ${{ github.actor }}
           CSM218_PORT_BASE: 9000
 
+      - name: Verify 60% Passing Threshold
+        if: always()
+        run: bash autograder/run_autograder.sh
+
       - name: Upload Autograder Results
         if: always()
         uses: actions/upload-artifact@v4

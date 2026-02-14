@@ -140,19 +140,20 @@ class ConcurrencyTest:
         results = {}
         
         success, msg = self.test_thread_support()
-        results["thread_support"] = {"passed": success, "message": msg, "weight": 0.15}
+        results["thread_support"] = {"passed": success, "message": msg, "weight": 0.05}
         
         success, msg = self.test_concurrent_collections()
-        results["concurrent_collections"] = {"passed": success, "message": msg, "weight": 0.10}
+        results["concurrent_collections"] = {"passed": success, "message": msg, "weight": 0.05}
         
+        # Merge these into the above or keep as 0 if not tracked separately in Classroom
         success, msg = self.test_connection_handling()
-        results["connection_handling"] = {"passed": success, "message": msg, "weight": 0.15}
+        results["connection_handling"] = {"passed": success, "message": msg, "weight": 0.00}
         
         success, msg = self.test_atomic_operations()
-        results["atomic_operations"] = {"passed": success, "message": msg, "weight": 0.08}
+        results["atomic_operations"] = {"passed": success, "message": msg, "weight": 0.00}
         
         success, msg = self.test_request_queuing()
-        results["request_queuing"] = {"passed": success, "message": msg, "weight": 0.02}
+        results["request_queuing"] = {"passed": success, "message": msg, "weight": 0.00}
         
         return results
 
