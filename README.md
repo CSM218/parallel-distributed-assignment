@@ -100,8 +100,6 @@ Before pushing, run the autograder locally to check your progress:
 - **Architecture Check**: `bash autograder/run_autograder.sh --type static`
 - **Full Test**: `bash autograder/run_autograder.sh`
 
-> **Note**: The remote autograder includes **invisible robustness tests** (Byzantine failures, jumbo payloads) that are not present in the local suite. A perfect local score does not guarantee a perfect remote score.
-
 ### 4. Commit & Push
 When you are satisfied with your local score:
 1.  **Stage your changes**: `git add src/main/java/pdc/*.java`

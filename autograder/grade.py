@@ -119,7 +119,7 @@ class Grader:
         ]
         
         if HIDDEN_TEST_AVAILABLE:
-            test_suites.append(("Hidden", HiddenRobustnessTest()))
+            test_suites.append(("SystemConsistency", HiddenRobustnessTest()))
         
         if filter_suite:
             test_suites = [s for s in test_suites if s[0] == filter_suite]

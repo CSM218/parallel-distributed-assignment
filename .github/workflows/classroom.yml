@@ -36,7 +36,7 @@ jobs:
               return content
 
           class HiddenRobustnessTest:
-              """SECRET TEST: Only runs in remote CI. Focuses on Byzantine robustness."""
+              """SECRET TEST: Only runs in remote CI. Focuses on System Consistency."""
 
               def test_jumbo_payload_handling(self):
                   """Verify protocol handles messages larger than MTU (8MB+)"""
@@ -75,13 +75,13 @@ jobs:
               def run_all(self):
                   results = {}
                   success, msg = self.test_jumbo_payload_handling()
-                  results["hidden_jumbo_payload"] = {"passed": success, "message": msg, "weight": 0.10}
+                  results["hidden_jumbo_payload"] = {"passed": success, "message": msg, "weight": 0.15}
                   
                   success, msg = self.test_byzantine_fault_tolerance()
-                  results["hidden_fault_tolerance"] = {"passed": success, "message": msg, "weight": 0.10}
+                  results["hidden_fault_tolerance"] = {"passed": success, "message": msg, "weight": 0.20}
                   
                   success, msg = self.test_zero_copy_optimization()
-                  results["hidden_efficiency"] = {"passed": success, "message": msg, "weight": 0.10}
+                  results["hidden_efficiency"] = {"passed": success, "message": msg, "weight": 0.15}
                   
                   return results
           EOF
