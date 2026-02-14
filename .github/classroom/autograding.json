@@ -1,0 +1,14 @@
+{
+  "tests": [
+    {
+      "name": "Full Distributed System Autograder",
+      "setup": "chmod +x autograder/run_autograder.sh",
+      "run": "bash autograder/run_autograder.sh",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 10,
+      "points": 100
+    }
+  ]
+}

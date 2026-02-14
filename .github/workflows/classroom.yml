@@ -1,77 +1,41 @@
-name: CSM218 Autograder
+name: GitHub Classroom Autograder
+on: [push]
 
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+permissions:
+  checks: write
+  actions: read
+  contents: read
 
 jobs:
-  autograder:
+  build:
+    name: Autograding
     runs-on: ubuntu-latest
-    
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Set up Java
-      uses: actions/setup-java@v3
-      with:
-        java-version: '11'
-        distribution: 'temurin'
-    
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
-    
-    - name: Cache Gradle packages
-      uses: actions/cache@v3
-      with:
-        path: ~/.gradle/caches
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
-        restore-keys: ${{ runner.os }}-gradle
-    
-    - name: Make gradlew executable
-      run: chmod +x ./gradlew
-    
-    - name: Grant execute permission to autograder script
-      run: chmod +x autograder/run_autograder.sh
-    
-    - name: Run autograder
-      env:
-        STUDENT_ID: ${{ github.actor }}
-        CSM218_PORT_BASE: 9000
-      run: bash autograder/run_autograder.sh
-    
-    - name: Upload results
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: autograder-results
-        path: autograder/results/results.json
-    
-    - name: Comment results on PR
-      if: github.event_name == 'pull_request' && always()
-      uses: actions/github-script@v6
-      with:
-        script: |
-          const fs = require('fs');
-          const results = JSON.parse(fs.readFileSync('autograder/results/results.json', 'utf8'));
+      - uses: actions/checkout@v4
+      
+      - name: Set up JDK 11
+        uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'temurin'
           
-          const message = `### Autograder Results
-          
-          **Score:** ${results.score}%
-          **Status:** ${results.status}
-          
-          ${results.message}`;
-          
-          github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: message
-          });
-    
-    - name: Set job status
-      if: always()
-      run: python3 -c "import json, os; p = os.path.join('autograder','results','results.json'); r = json.load(open(p)); print(f'Score: {r.get(\"score\")}% Status: {r.get(\"status\")}'); exit(1 if r.get('status') == 'FAIL' else 0)"
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      # Support for your custom grading script
+      - name: Run Autograder
+        uses: education/autograding@v1
+        id: autograder
+        continue-on-error: true
+        env:
+          STUDENT_ID: ${{ github.actor }}
+          CSM218_PORT_BASE: 9000
+
+      - name: Upload Autograder Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: autograder-results
+          path: autograder/results/
