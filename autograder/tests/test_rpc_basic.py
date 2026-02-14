@@ -11,17 +11,12 @@ class AutograderTest:
         self.port_counter = 10000
     
     def compile_student_code(self):
-        """Compile student code"""
+        """Verify student code was compiled by main grader"""
         try:
-            result = subprocess.run(
-                ["./gradlew", "build"],
-                cwd=".",
-                capture_output=True,
-                timeout=60
-            )
-            if result.returncode != 0:
-                return False, "Compilation failed"
-            return True, "Compilation successful"
+            # Check for build artifacts
+            if os.path.exists("build/classes/java/main/pdc/Message.class"):
+                return True, "Compilation verified"
+            return False, "Build artifacts not found"
         except Exception as e:
             return False, str(e)
     

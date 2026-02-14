@@ -158,6 +158,9 @@ class Grader:
     
     def run(self, filter_suite=None, filter_type=None):
         """Execute full autograding pipeline"""
+        # Change to repo root to ensure relative paths in tests work correctly
+        os.chdir(self.submission_dir)
+        
         print(f"=== CSM218 Autograder {'['+filter_suite+']' if filter_suite else ''} {'('+filter_type+')' if filter_type else ''} ===\n")
         
         # Compile code
