@@ -74,7 +74,7 @@ print(json.dumps(msg))
                             has_socket = True
                         if "java.rmi" in content:
                             has_rmi = True
-                        if "grpc" in content or "proto" in content:
+                        if "io.grpc" in content or "com.google.protobuf" in content:
                             has_grpc = True
                 except:
                     pass

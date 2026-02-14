@@ -1,6 +1,12 @@
-import json
 import re
 from pathlib import Path
+
+def strip_comments(content):
+    # Remove single line comments
+    content = re.sub(r'//.*', '', content)
+    # Remove multi-line comments
+    content = re.sub(r'/\*.*?\*/', '', content, flags=re.DOTALL)
+    return content
 
 class ProtocolStructureTest:
     def __init__(self):
@@ -15,7 +21,7 @@ class ProtocolStructureTest:
                 return False, "Message class not found"
             
             with open("src/main/java/pdc/Message.java", "r") as f:
-                content = f.read()
+                content = strip_comments(f.read())
                 
                 required_fields = ["magic", "version", "messageType", "studentId", "timestamp", "payload"]
                 missing_fields = []
@@ -45,7 +51,7 @@ class ProtocolStructureTest:
             for file_path in files:
                 try:
                     with open(file_path, "r") as f:
-                        content = f.read()
+                        content = strip_comments(f.read())
                         
                         # Check for serialization methods
                         if "toJson" in content or "toXml" in content or "serialize" in content.lower():
@@ -73,7 +79,7 @@ class ProtocolStructureTest:
             for file_path in files:
                 try:
                     with open(file_path, "r") as f:
-                        content = f.read()
+                        content = strip_comments(f.read())
                         
                         if "validate" in content.lower() or "parse" in content:
                             validation_found = True
@@ -127,7 +133,7 @@ class ProtocolStructureTest:
             for file_path in files:
                 try:
                     with open(file_path, "r") as f:
-                        content = f.read()
+                        content = strip_comments(f.read())
                         
                         if "getenv" in content or "System.getenv" in content:
                             env_usage = True

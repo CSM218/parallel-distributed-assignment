@@ -1,9 +1,13 @@
-import json
-import subprocess
-import time
-import os
 import signal
+import re
 from pathlib import Path
+
+def strip_comments(content):
+    # Remove single line comments
+    content = re.sub(r'//.*', '', content)
+    # Remove multi-line comments
+    content = re.sub(r'/\*.*?\*/', '', content, flags=re.DOTALL)
+    return content
 
 class FailureHandlingTest:
     def __init__(self):
@@ -20,7 +24,7 @@ class FailureHandlingTest:
             for file_path in files_to_check:
                 try:
                     with open(file_path, "r") as f:
-                        content = f.read()
+                        content = strip_comments(f.read())
                         if "heartbeat" in content.lower() or "ping" in content.lower() or "health" in content.lower():
                             heartbeat_logic = True
                         if "timeout" in content.lower():
@@ -43,7 +47,7 @@ class FailureHandlingTest:
             reassignment_logic = False
             
             with open("src/main/java/pdc/Master.java", "r") as f:
-                content = f.read()
+                content = strip_comments(f.read())
                 if "retry" in content.lower() or "recover" in content.lower():
                     recovery_logic = True
                 if "reassign" in content.lower() or "redistribute" in content.lower():

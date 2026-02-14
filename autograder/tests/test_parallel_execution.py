@@ -1,10 +1,12 @@
-import json
-import subprocess
-import time
-import os
-import sys
-import threading
+import re
 from pathlib import Path
+
+def strip_comments(content):
+    # Remove single line comments
+    content = re.sub(r'//.*', '', content)
+    # Remove multi-line comments
+    content = re.sub(r'/\*.*?\*/', '', content, flags=re.DOTALL)
+    return content
 
 class ParallelExecutionTest:
     def __init__(self):
@@ -23,8 +25,8 @@ class ParallelExecutionTest:
             for file_path in files:
                 try:
                     with open(file_path, "r") as f:
-                        content = f.read()
-                        if "ExecutorService" in content or "parallel" in content.lower() or "Thread" in content:
+                        content = strip_comments(f.read())
+                        if "submit(" in content or "invokeAll" in content or "fork" in content:
                             parallel_logic = True
                 except:
                     pass
@@ -45,7 +47,7 @@ class ParallelExecutionTest:
             for file_path in files:
                 try:
                     with open(file_path, "r") as f:
-                        content = f.read()
+                        content = strip_comments(f.read())
                         if "Thread" in content or "ExecutorService" in content:
                             concurrent_handling = True
                 except:

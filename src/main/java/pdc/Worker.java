@@ -1,5 +1,7 @@
 package pdc;
 
+import java.net.Socket;
+
 /**
  * A Worker is a node in the cluster capable of high-concurrency computation.
  * 
