@@ -19,7 +19,18 @@ class Grader:
     def __init__(self):
         self.results = {}
         self.total_score = 0.0
-        self.output_path = "/autograder/results/results.json"
+        
+        # Determine if running in GitHub Classroom or regular GitHub Actions
+        if os.path.exists("/submission"):
+            # GitHub Classroom environment
+            self.submission_dir = "/submission"
+            self.output_dir = "/autograder/results"
+        else:
+            # Regular GitHub Actions - use repository root
+            self.submission_dir = os.getcwd()
+            self.output_dir = os.path.join(os.getcwd(), "autograder", "results")
+        
+        self.output_path = os.path.join(self.output_dir, "results.json")
         
     def compile_code(self):
         """Compile student and reference code"""
@@ -27,7 +38,7 @@ class Grader:
             # Compile student code
             result = subprocess.run(
                 ["./gradlew", "build"],
-                cwd="/submission",
+                cwd=self.submission_dir,
                 capture_output=True,
                 timeout=120
             )
@@ -111,7 +122,7 @@ class Grader:
         final_score = self.calculate_score(test_results, test_weights)
         
         # Determine status
-        status = "PASS" if final_score >= 40.0 else "FAIL"
+        status = "PASS" if final_score >= 60.0 else "FAIL"
         
         results = {
             "score": round(final_score, 2),
@@ -126,10 +137,7 @@ class Grader:
     
     def output_results(self, results):
         """Output results as JSON"""
-        os.makedirs("/autograder/results", exist_ok=True)
-        
-        with open(self.output_path, 'w') as f:
-            json.dump(results, f, indent=2)
+        os.makedirs(self.output_dir, exist_ok=True)
         
         with open(self.output_path, 'w') as f:
             json.dump(results, f, indent=2)

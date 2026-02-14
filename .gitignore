@@ -39,3 +39,42 @@ Thumbs.db
 .project
 .settings/
 bin/
+# Gradle
+.gradle/
+build/
+gradlew.lock
+*.gradle.bak
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Autograder results (don't commit to repo)
+autograder/results/
+
+# Reference solution (hidden from students in GitHub Classroom)
+reference_solution/
+
+# Documentation for maintainers only
+TEST_REPORT_AND_ISSUES.md
+DEPLOYMENT_REPORT.md
+DEPLOYMENT_COMPLETE.md
+FILE_INVENTORY.md
+GENERATION_SUMMARY.md
+FINAL_STATUS.txt
+
+# Testing scripts
+test_and_push.sh
+verify_setup.py
+
+# GitHub Actions workflow logs
+.github/workflows/logs/

@@ -4,7 +4,13 @@ set -e
 
 echo "=== CSM218 Autograder Start ==="
 
-# Run Python grading script
+# Get the directory where this script is located
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# Change to the autograder directory
+cd "$SCRIPT_DIR"
+
+# Run Python grading script from autograder directory
 python3 grade.py
 
 echo "=== Autograder Complete ==="
