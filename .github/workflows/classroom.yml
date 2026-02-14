@@ -31,7 +31,10 @@ jobs:
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
         restore-keys: ${{ runner.os }}-gradle
     
-    - name: Grant execute permission
+    - name: Make gradlew executable
+      run: chmod +x ./gradlew
+    
+    - name: Grant execute permission to autograder script
       run: chmod +x autograder/run_autograder.sh
     
     - name: Run autograder
