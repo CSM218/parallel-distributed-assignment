@@ -7,6 +7,17 @@ import shutil
 import subprocess
 from pathlib import Path
 
+import argparse
+
+# Ensure output handles UTF-8 (especially on Windows)
+if sys.stdout.encoding.lower() != 'utf-8':
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+    except AttributeError:
+        # Fallback for older python versions
+        import codecs
+        sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
+
 # Import test modules
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'tests'))
 
@@ -79,13 +90,13 @@ class Grader:
                 print(proc.stderr)
                 return False
 
-            print('✓ Compilation successful')
+            print('[OK] Compilation successful')
             return True
         except Exception as e:
             # write exception to log
             with open(gradle_log_path, 'w', encoding='utf-8') as f:
                 f.write(str(e))
-            print(f'✗ Compilation error: {e}')
+            print(f'[FAIL] Compilation error: {e}')
             return False
     
     def run_tests(self, filter_suite=None, filter_type=None):
@@ -118,8 +129,13 @@ class Grader:
                     continue
                 
                 full_name = f"{suite_name}::{test_name}"
-                status = "✓" if test_result["passed"] else "✗"
-                print(f"{status} {test_name}: {test_result['message']}")
+                p_status = "PASS" if test_result["passed"] else "FAIL"
+                print(f"[{p_status}] {test_name}: {test_result['message']}")
+                
+                # Output Tag for GitHub Classroom points matching
+                if test_result["passed"]:
+                    tag_name = test_name.upper().replace(" ", "_")
+                    print(f"[CLASSROOM_TAG] {tag_name} PASSED")
                 
                 all_results[full_name] = test_result["passed"]
                 all_weights[full_name] = test_result.get("weight", 0)
@@ -182,11 +198,8 @@ class Grader:
         print(f"=== Score for this section: {final_score:.2f}% ===")
         
         if filter_suite or filter_type:
-            # For Classroom, exit 0 only if score > 0 (or some other logic)
-            # Actually, let's exit 0 if ALL tests in this filtered set passed
-            all_passed = all(test_results.values()) if test_results else False
-            if not all_passed:
-                sys.exit(1)
+            # Let GitHub Classroom string matching determine the points
+            sys.exit(0)
         else:
             if status == "FAIL":
                 sys.exit(1)

@@ -1,53 +1,123 @@
 {
   "tests": [
     {
-      "name": "01 Project Structural Integrity & Requirements (Static Analysis)",
-      "setup": "chmod +x autograder/run_autograder.sh",
-      "run": "bash autograder/run_autograder.sh --type static",
+      "name": "01 Source Compilation Check",
+      "setup": "chmod +x ./gradlew",
+      "run": "bash autograder/run_autograder.sh --suite RPC --type static",
       "input": "",
-      "output": "Score for this section: 100.00%",
+      "output": "[CLASSROOM_TAG] COMPILATION PASSED",
       "comparison": "included",
       "timeout": 10,
-      "points": 45
+      "points": 5
     },
     {
-      "name": "02 Basic IPC & Messaging (Dynamic Connection)",
-      "setup": "chmod +x autograder/run_autograder.sh",
-      "run": "bash autograder/run_autograder.sh --suite RPC --type dynamic",
+      "name": "02 TCP Socket IPC Communication",
+      "setup": "",
+      "run": "bash autograder/run_autograder.sh --suite RPC --type static",
       "input": "",
-      "output": "Score for this section: 100.00%",
+      "output": "[CLASSROOM_TAG] SOCKET_IPC PASSED",
       "comparison": "included",
-      "timeout": 10,
-      "points": 15
+      "timeout": 5,
+      "points": 10
     },
     {
-      "name": "03 Parallel Matrix Execution Speedup",
+      "name": "03 RPC Request-Response Abstraction",
+      "setup": "",
+      "run": "bash autograder/run_autograder.sh --suite RPC --type static",
+      "input": "",
+      "output": "[CLASSROOM_TAG] RPC_ABSTRACTION PASSED",
+      "comparison": "included",
+      "timeout": 5,
+      "points": 10
+    },
+    {
+      "name": "04 CSM218 Protocol Compliant (Static)",
+      "setup": "",
+      "run": "bash autograder/run_autograder.sh --suite RPC --type static",
+      "input": "",
+      "output": "[CLASSROOM_TAG] PROTOCOL_SCHEMA PASSED",
+      "comparison": "included",
+      "timeout": 5,
+      "points": 5
+    },
+    {
+      "name": "05 Java Threading Support",
+      "setup": "",
+      "run": "bash autograder/run_autograder.sh --suite Concurrency --type static",
+      "input": "",
+      "output": "[CLASSROOM_TAG] THREAD_SUPPORT PASSED",
+      "comparison": "included",
+      "timeout": 5,
+      "points": 10
+    },
+    {
+      "name": "06 Shared State Safety (Concurrent Collections)",
+      "setup": "",
+      "run": "bash autograder/run_autograder.sh --suite Concurrency --type static",
+      "input": "",
+      "output": "[CLASSROOM_TAG] CONCURRENT_COLLECTIONS PASSED",
+      "comparison": "included",
+      "timeout": 5,
+      "points": 10
+    },
+    {
+      "name": "07 No Prohibited Distributed Frameworks",
+      "setup": "",
+      "run": "bash autograder/run_autograder.sh --suite Protocol --type static",
+      "input": "",
+      "output": "[CLASSROOM_TAG] NO_EXTERNAL_FRAMEWORKS PASSED",
+      "comparison": "included",
+      "timeout": 5,
+      "points": 10
+    },
+    {
+      "name": "08 Core Message Frame Structure",
+      "setup": "",
+      "run": "bash autograder/run_autograder.sh --suite Protocol --type static",
+      "input": "",
+      "output": "[CLASSROOM_TAG] MESSAGE_FORMAT PASSED",
+      "comparison": "included",
+      "timeout": 5,
+      "points": 5
+    },
+    {
+      "name": "09 Environment Variables Bound Identity",
+      "setup": "",
+      "run": "bash autograder/run_autograder.sh --suite Protocol --type static",
+      "input": "",
+      "output": "[CLASSROOM_TAG] ENVIRONMENT_VARIABLES PASSED",
+      "comparison": "included",
+      "timeout": 5,
+      "points": 5
+    },
+    {
+      "name": "10 Parallel Matrix Speedup Metrics",
       "setup": "chmod +x autograder/run_autograder.sh",
       "run": "bash autograder/run_autograder.sh --suite Parallel --type dynamic",
       "input": "",
-      "output": "Score for this section: 100.00%",
+      "output": "[CLASSROOM_TAG] PARALLEL_MATRIX_MULTIPLY PASSED",
       "comparison": "included",
-      "timeout": 10,
-      "points": 20
-    },
-    {
-      "name": "04 Distributed Failure Handling & Task Reassignment",
-      "setup": "chmod +x autograder/run_autograder.sh",
-      "run": "bash autograder/run_autograder.sh --suite Failure --type dynamic",
-      "input": "",
-      "output": "Score for this section: 100.00%",
-      "comparison": "included",
-      "timeout": 10,
+      "timeout": 15,
       "points": 15
     },
     {
-      "name": "05 Advanced Cluster Coordination & Logic",
-      "setup": "chmod +x autograder/run_autograder.sh",
+      "name": "11 Cluster Fault Tolerance & Task Reassignment",
+      "setup": "",
+      "run": "bash autograder/run_autograder.sh --suite Failure --type dynamic",
+      "input": "",
+      "output": "[CLASSROOM_TAG] RECOVERY_MECHANISM PASSED",
+      "comparison": "included",
+      "timeout": 15,
+      "points": 15
+    },
+    {
+      "name": "12 Advanced AdvancedProtocol Handshake",
+      "setup": "",
       "run": "bash autograder/run_autograder.sh --suite Advanced --type dynamic",
       "input": "",
-      "output": "Score for this section: 100.00%",
+      "output": "[CLASSROOM_TAG] ADVANCED_HANDSHAKE PASSED",
       "comparison": "included",
-      "timeout": 10,
+      "timeout": 5,
       "points": 5
     }
   ]
