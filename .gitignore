@@ -27,6 +27,7 @@ Thumbs.db
 # Build output
 *.class
 *.jar
+!gradle/wrapper/gradle-wrapper.jar
 *.war
 *.nar
 *.ear
