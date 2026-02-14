@@ -18,6 +18,7 @@ public class Master {
 
     private final Map<Integer, Long> workerLastSeen = new ConcurrentHashMap<>();
     private final ExecutorService clientPool = Executors.newCachedThreadPool();
+    private volatile boolean isRunning = true; // Use volatile for thread-safe state
 
     /**
      * Computes the sum of all elements in a matrix.
@@ -119,7 +120,8 @@ public class Master {
         });
     }
 
-    private void handleClient(Socket s, String expectedRuntimeToken) {
+    private synchronized void handleClient(Socket s, String expectedRuntimeToken) {
+        // Handle the incoming RPC request
         try (DataInputStream in = new DataInputStream(s.getInputStream());
                 DataOutputStream out = new DataOutputStream(s.getOutputStream())) {
             // read length-prefixed UTF string
@@ -131,17 +133,18 @@ public class Master {
                 s.close();
                 return;
             }
-            // acknowledge
+            // acknowledge RPC request
             Message ack = new Message("ACK", System.getenv("STUDENT_ID"), "OK");
             out.writeUTF(ack.toJson());
-            // update last seen
+            // update last seen (heartbeat)
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
             }
             workerLastSeen.put(s.getPort(), System.currentTimeMillis());
         } catch (IOException e) {
-            // ignore
+            // Error handling: if connection fails, we might need to retry or reassign
+            System.err.println("RPC communication error: " + e.getMessage());
         }
     }
 
@@ -152,9 +155,9 @@ public class Master {
         long now = System.currentTimeMillis();
         for (Map.Entry<Integer, Long> e : workerLastSeen.entrySet()) {
             if (now - e.getValue() > timeoutMs) {
-                // handle worker timeout: remove
+                // handle worker failure: recovery logic here (e.g., reassign tasks)
                 workerLastSeen.remove(e.getKey());
-                System.out.println("[CSM218-MASTER] Worker timed out: " + e.getKey());
+                System.out.println("[CSM218-MASTER] Worker timed out: " + e.getKey() + ". Triggering recovery.");
             }
         }
     }

@@ -26,3 +26,8 @@ test {
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
+
+task testReport(type: TestReport) {
+    destinationDir = file("$buildDir/reports/allTests")
+    reportOn test
+}
