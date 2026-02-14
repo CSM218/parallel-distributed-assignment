@@ -1,0 +1,79 @@
+{
+  "rubric": {
+    "IPC_Communication": {
+      "name": "IPC Communication (20%)",
+      "description": "Verify processes exchange structured messages over sockets",
+      "weight": 0.20,
+      "criteria": [
+        "Bidirectional messaging between processes",
+        "Multiple processes connected via sockets",
+        "Correct message delivery and ordering",
+        "No message loss during communication"
+      ]
+    },
+    "RPC_Abstraction": {
+      "name": "RPC Abstraction (20%)",
+      "description": "Verify RPC semantics and abstraction layer",
+      "weight": 0.20,
+      "criteria": [
+        "Client call followed by remote execution",
+        "Argument serialization/deserialization",
+        "Result returned correctly to caller",
+        "RPC call-return semantics preserved"
+      ]
+    },
+    "Parallel_Execution": {
+      "name": "Parallel Execution (20%)",
+      "description": "Verify workers execute concurrently",
+      "weight": 0.20,
+      "criteria": [
+        "Multiple tasks sent simultaneously",
+        "Overlapping execution windows detected",
+        "Parallel speedup observed",
+        "Concurrent resource usage"
+      ]
+    },
+    "Distributed_Coordination": {
+      "name": "Distributed Coordination (15%)",
+      "description": "Verify task distribution and result aggregation",
+      "weight": 0.15,
+      "criteria": [
+        "Tasks distributed to multiple workers",
+        "Results aggregated correctly",
+        "Load balanced across workers",
+        "All workers utilized"
+      ]
+    },
+    "Failure_Handling": {
+      "name": "Failure Handling (15%)",
+      "description": "Verify failure detection and recovery",
+      "weight": 0.15,
+      "criteria": [
+        "Detects worker failure via heartbeat timeout",
+        "Tasks reassigned on failure",
+        "System continues operation",
+        "Proper error reporting"
+      ]
+    },
+    "Concurrency": {
+      "name": "Concurrency Inside Process (10%)",
+      "description": "Verify server handles concurrent requests",
+      "weight": 0.10,
+      "criteria": [
+        "Accepts multiple simultaneous connections",
+        "Processes requests concurrently",
+        "Thread-safe state management",
+        "No race conditions"
+      ]
+    }
+  },
+  "passing_score": 40,
+  "excellent_score": 85,
+  "grading_scale": {
+    "A": "90-100",
+    "B": "80-89",
+    "C": "70-79",
+    "D": "60-69",
+    "F": "0-59"
+  }
+}

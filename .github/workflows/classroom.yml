@@ -1,0 +1,81 @@
+name: CSM218 Autograder
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  autograder:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Java
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Cache Gradle packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.gradle/caches
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+        restore-keys: ${{ runner.os }}-gradle
+    
+    - name: Grant execute permission
+      run: chmod +x autograder/run_autograder.sh
+    
+    - name: Run autograder
+      env:
+        STUDENT_ID: ${{ github.actor }}
+        CSM218_PORT_BASE: 9000
+      run: bash autograder/run_autograder.sh
+    
+    - name: Upload results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: autograder-results
+        path: /autograder/results/results.json
+    
+    - name: Comment results on PR
+      if: github.event_name == 'pull_request' && always()
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          const results = JSON.parse(fs.readFileSync('/autograder/results/results.json', 'utf8'));
+          
+          const message = `### Autograder Results
+          
+          **Score:** ${results.score}%
+          **Status:** ${results.status}
+          
+          ${results.message}`;
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: message
+          });
+    
+    - name: Set job status
+      if: always()
+      run: |
+        python3 -c "
+        import json
+        with open('/autograder/results/results.json') as f:
+          results = json.load(f)
+        if results['status'] == 'FAIL':
+          exit(1)
+        "
