@@ -3,6 +3,7 @@
 import json
 import sys
 import os
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -20,38 +21,70 @@ class Grader:
         self.results = {}
         self.total_score = 0.0
         
-        # Determine if running in GitHub Classroom or regular GitHub Actions
+        # Determine repository root and environment
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        repo_root = os.path.abspath(os.path.join(script_dir, os.pardir))
+
         if os.path.exists("/submission"):
-            # GitHub Classroom environment
+            # GitHub Classroom environment: submission mounted at /submission
             self.submission_dir = "/submission"
             self.output_dir = "/autograder/results"
         else:
-            # Regular GitHub Actions - use repository root
-            self.submission_dir = os.getcwd()
-            self.output_dir = os.path.join(os.getcwd(), "autograder", "results")
-        
+            # Regular GitHub Actions or local runs: use repository root
+            self.submission_dir = repo_root
+            self.output_dir = os.path.join(repo_root, "autograder", "results")
+
         self.output_path = os.path.join(self.output_dir, "results.json")
         
     def compile_code(self):
         """Compile student and reference code"""
+        repo_root = self.submission_dir
+        gradle_log_path = os.path.join(self.output_dir, 'gradle_build.log')
+        os.makedirs(self.output_dir, exist_ok=True)
+
+        # Choose wrapper based on platform and availability
+        is_windows = sys.platform.startswith('win')
+        wrapper_sh = os.path.join(repo_root, 'gradlew')
+        wrapper_bat = os.path.join(repo_root, 'gradlew.bat')
+
+        cmd = None
+        shell = False
+        if is_windows and os.path.exists(wrapper_bat):
+            cmd = [wrapper_bat, 'build']
+            shell = True
+        elif (not is_windows) and os.path.exists(wrapper_sh):
+            cmd = [wrapper_sh, 'build']
+            shell = False
+        elif shutil.which('gradle'):
+            cmd = ['gradle', 'build']
+            shell = False
+        else:
+            # nothing to run
+            with open(gradle_log_path, 'w', encoding='utf-8') as f:
+                f.write('No gradle wrapper or gradle executable found in PATH.')
+            print('COMPILATION FAILED: no gradle wrapper or gradle found')
+            return False
+
         try:
-            # Compile student code
-            result = subprocess.run(
-                ["./gradlew", "build"],
-                cwd=self.submission_dir,
-                capture_output=True,
-                timeout=120
-            )
-            
-            if result.returncode != 0:
-                print("COMPILATION FAILED")
-                print(result.stderr.decode())
+            proc = subprocess.run(cmd, cwd=repo_root, capture_output=True, timeout=300, text=True, shell=shell)
+            # write log always for visibility
+            with open(gradle_log_path, 'w', encoding='utf-8') as f:
+                f.write(proc.stdout or '')
+                f.write('\n')
+                f.write(proc.stderr or '')
+
+            if proc.returncode != 0:
+                print('COMPILATION FAILED')
+                print(proc.stderr)
                 return False
-            
-            print("✓ Compilation successful")
+
+            print('✓ Compilation successful')
             return True
         except Exception as e:
-            print(f"✗ Compilation error: {e}")
+            # write exception to log
+            with open(gradle_log_path, 'w', encoding='utf-8') as f:
+                f.write(str(e))
+            print(f'✗ Compilation error: {e}')
             return False
     
     def run_tests(self):

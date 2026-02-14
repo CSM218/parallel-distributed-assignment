@@ -16,7 +16,7 @@ class WorkerTest {
     @BeforeEach
     void setUp() {
         worker = new Worker(1);
-        testData={{1,2},{3,4}};
+        testData = new int[][] { { 1, 2 }, { 3, 4 } };
     }
 
     @Test
