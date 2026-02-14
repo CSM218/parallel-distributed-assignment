@@ -1,0 +1,33 @@
+name: Autograder
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        java-version: '20'
+        distribution: 'temurin'
+    
+    - name: Make Gradle wrapper executable
+      run: chmod +x ./gradlew
+    
+    - name: Build with Gradle
+      run: ./gradlew build
+    
+    - name: Run Tests
+      run: ./gradlew test
+    
+    - name: Generate Test Report
+      if: always()
+      run: ./gradlew testReport
