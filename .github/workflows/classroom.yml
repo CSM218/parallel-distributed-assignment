@@ -74,12 +74,4 @@ jobs:
     
     - name: Set job status
       if: always()
-      run: |
-        python3 -c "
-        import json, os
-        p = os.path.join('autograder','results','results.json')
-        with open(p) as f:
-          results = json.load(f)
-        if results.get('status') == 'FAIL':
-          exit(1)
-        "
+      run: python3 -c "import json, os; p = os.path.join('autograder','results','results.json'); r = json.load(open(p)); print(f'Score: {r.get(\"score\")}% Status: {r.get(\"status\")}'); exit(1 if r.get('status') == 'FAIL' else 0)"
