@@ -1,14 +1,54 @@
 {
   "tests": [
     {
-      "name": "Full Distributed System Autograder",
+      "name": "01 Project Structural Integrity & Requirements (Static Analysis)",
       "setup": "chmod +x autograder/run_autograder.sh",
-      "run": "bash autograder/run_autograder.sh",
+      "run": "bash autograder/run_autograder.sh --type static",
       "input": "",
-      "output": "Status: PASS",
+      "output": "Score for this section: 100.00%",
       "comparison": "included",
       "timeout": 10,
-      "points": 100
+      "points": 45
+    },
+    {
+      "name": "02 Basic IPC & Messaging (Dynamic Connection)",
+      "setup": "chmod +x autograder/run_autograder.sh",
+      "run": "bash autograder/run_autograder.sh --suite RPC --type dynamic",
+      "input": "",
+      "output": "Score for this section: 100.00%",
+      "comparison": "included",
+      "timeout": 10,
+      "points": 15
+    },
+    {
+      "name": "03 Parallel Matrix Execution Speedup",
+      "setup": "chmod +x autograder/run_autograder.sh",
+      "run": "bash autograder/run_autograder.sh --suite Parallel --type dynamic",
+      "input": "",
+      "output": "Score for this section: 100.00%",
+      "comparison": "included",
+      "timeout": 10,
+      "points": 20
+    },
+    {
+      "name": "04 Distributed Failure Handling & Task Reassignment",
+      "setup": "chmod +x autograder/run_autograder.sh",
+      "run": "bash autograder/run_autograder.sh --suite Failure --type dynamic",
+      "input": "",
+      "output": "Score for this section: 100.00%",
+      "comparison": "included",
+      "timeout": 10,
+      "points": 15
+    },
+    {
+      "name": "05 Advanced Cluster Coordination & Logic",
+      "setup": "chmod +x autograder/run_autograder.sh",
+      "run": "bash autograder/run_autograder.sh --suite Advanced --type dynamic",
+      "input": "",
+      "output": "Score for this section: 100.00%",
+      "comparison": "included",
+      "timeout": 10,
+      "points": 5
     }
   ]
 }

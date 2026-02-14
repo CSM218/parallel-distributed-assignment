@@ -15,6 +15,7 @@ from test_parallel_execution import ParallelExecutionTest
 from test_failure_handling import FailureHandlingTest
 from test_protocol_structure import ProtocolStructureTest
 from test_concurrency import ConcurrencyTest
+from test_advanced_protocol import AdvancedProtocolTest
 
 class Grader:
     def __init__(self):
@@ -87,15 +88,19 @@ class Grader:
             print(f'✗ Compilation error: {e}')
             return False
     
-    def run_tests(self):
-        """Run all test suites"""
+    def run_tests(self, filter_suite=None, filter_type=None):
+        """Run all or specific test suites"""
         test_suites = [
-            ("RPC Basic Tests", AutograderTest()),
-            ("Parallel Execution Tests", ParallelExecutionTest()),
-            ("Failure Handling Tests", FailureHandlingTest()),
-            ("Protocol Structure Tests", ProtocolStructureTest()),
-            ("Concurrency Tests", ConcurrencyTest()),
+            ("RPC", AutograderTest()),
+            ("Parallel", ParallelExecutionTest()),
+            ("Failure", FailureHandlingTest()),
+            ("Protocol", ProtocolStructureTest()),
+            ("Concurrency", ConcurrencyTest()),
+            ("Advanced", AdvancedProtocolTest()),
         ]
+        
+        if filter_suite:
+            test_suites = [s for s in test_suites if s[0] == filter_suite]
         
         all_results = {}
         all_weights = {}
@@ -105,6 +110,13 @@ class Grader:
             results = tester.run_all()
             
             for test_name, test_result in results.items():
+                is_static = test_result.get("type") == "static" or "compilation" in test_name or "schema" in test_name or "framework" in test_name or "variable" in test_name or "support" in test_name or "collection" in test_name or "format" in test_name or "serialization" in test_name
+                
+                if filter_type == "static" and not is_static:
+                    continue
+                if filter_type == "dynamic" and is_static:
+                    continue
+                
                 full_name = f"{suite_name}::{test_name}"
                 status = "✓" if test_result["passed"] else "✗"
                 print(f"{status} {test_name}: {test_result['message']}")
@@ -128,9 +140,9 @@ class Grader:
         score = (weighted_score / total_weight * 100) if total_weight > 0 else 0
         return score
     
-    def run(self):
+    def run(self, filter_suite=None, filter_type=None):
         """Execute full autograding pipeline"""
-        print("=== CSM218 Autograder ===\n")
+        print(f"=== CSM218 Autograder {'['+filter_suite+']' if filter_suite else ''} {'('+filter_type+')' if filter_type else ''} ===\n")
         
         # Compile code
         if not self.compile_code():
@@ -141,11 +153,11 @@ class Grader:
                 "message": "Compilation failed"
             }
             self.output_results(results)
-            return
+            sys.exit(1)
         
         # Run tests
         try:
-            test_results, test_weights = self.run_tests()
+            test_results, test_weights = self.run_tests(filter_suite, filter_type)
         except Exception as e:
             print(f"Error running tests: {e}")
             test_results = {}
@@ -167,10 +179,17 @@ class Grader:
         
         self.output_results(results)
         print(f"\nStatus: {status}")
-        print(f"=== Final Score: {final_score:.2f}% ===")
+        print(f"=== Score for this section: {final_score:.2f}% ===")
         
-        if status == "FAIL":
-            sys.exit(1)
+        if filter_suite or filter_type:
+            # For Classroom, exit 0 only if score > 0 (or some other logic)
+            # Actually, let's exit 0 if ALL tests in this filtered set passed
+            all_passed = all(test_results.values()) if test_results else False
+            if not all_passed:
+                sys.exit(1)
+        else:
+            if status == "FAIL":
+                sys.exit(1)
     
     def output_results(self, results):
         """Output results as JSON"""
@@ -182,5 +201,11 @@ class Grader:
         print(f"Results written to {self.output_path}")
 
 if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description='CSM218 Autograder')
+    parser.add_argument('--suite', type=str, help='Run a specific test suite (RPC, Parallel, Failure, Protocol, Concurrency, Advanced)')
+    parser.add_argument('--type', type=str, choices=['static', 'dynamic'], help='Filter by test type')
+    args = parser.parse_args()
+    
     grader = Grader()
-    grader.run()
+    grader.run(filter_suite=args.suite, filter_type=args.type)

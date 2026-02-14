@@ -1,225 +1,114 @@
-# Parallel and Distributed Computing (PDC) - Matrix Assignment
+# CSM218: Parallel and Distributed Computing - Matrix Assignment
 
 ## Problem Description
 
-In this assignment, you will implement a **distributed matrix computation system** using Java with message-passing between multiple worker threads.
+In this assignment, you will implement a **distributed task coordination system** that performs matrix operations. Unlike standard socket programs, you are required to design a custom communication protocol and manage a dynamic pool of worker processes.
 
 ### Objectives
 
-1. **Master-Worker Architecture**: Implement a Master class that coordinates work distribution to Worker instances.
-2. **Matrix Operations**: Implement matrix sum and matrix multiplication operations.
-3. **Parallel Processing**: Distribute matrix computations across multiple workers.
-4. **Message Passing**: Implement thread-safe communication between Master and Workers.
-5. **Performance**: Optimize to leverage parallelism on multi-core systems.
+1.  **Custom Protocol Design**: Define a wire format for the `Message` class in `Message.java`. Do NOT use JSON or standard Java Serialization.
+2.  **Distributed Coordination**: Implement the `Master` class to partition matrix data, schedule tasks, and handle "Stragglers" (slow workers).
+3.  **High-Concurrency Workers**: Implement the `Worker` class as a concurrent node that joins the cluster and executes tasks asynchronously.
+4.  **Failure Recovery**: Master must detect worker failure via heartbeat timeouts and re-assign tasks to ensure the job completes.
 
-### Assignment Tasks
+### Project Structure
 
-1. **Master.java** - Implement the following methods:
-   - `sumMatrix(int[][] matrix)`: Calculate the sum of all elements
-   - `multiplyMatrices(int[][] matrixA, int[][] matrixB)`: Multiply two matrices
-   - `processDistributed(int[][] matrix, int numWorkers)`: Distribute work to workers
-
-2. **Worker.java** - Implement the following methods:
-   - `assignData(int[][] dataChunk)`: Accept a chunk of data to process
-   - `processData()`: Perform computation on assigned data
-   - `getResult()`: Return the computed result
-
-3. **MatrixGenerator** - Helper class (already provided):
-   - Use for generating test matrices
-   - Supports random matrices, identity matrices, and filled matrices
-
-### Constraints
-
-- Use Java concurrency utilities (Thread, ExecutorService, etc.) if needed
-- Ensure thread-safe communication between Master and Workers
-- Maximize parallelism while minimizing synchronization overhead
-
----
-
-## Project Structure
-
-```
-src/
-  main/java/pdc/
-    Master.java           # Coordinator class (implement here)
-    Worker.java           # Worker class (implement here)
-    MatrixGenerator.java  # Utility class (provided)
-  test/java/pdc/
-    MasterTest.java       # JUnit tests for Master
-    WorkerTest.java       # JUnit tests for Worker
-.github/workflows/
-  autograde.yml           # GitHub Actions CI/CD pipeline
-build.gradle              # Gradle build configuration
-README.md                 # This file
-.gitignore                # Git ignore rules
+```text
+src/main/java/pdc/
+  Master.java    # Distributed Cluster Coordinator
+  Worker.java    # Concurrent Execution Node
+  Message.java   # Custom Wire Protocol Definition
+  MatrixGenerator.java # Utility (Provided)
+autograder/
+  grade.py       # Local grading script
+  tests/         # Python integration tests
 ```
 
 ---
 
-## Building the Project
+## Local Testing Guide
 
-### Prerequisites
+To verify your solution before pushing to GitHub, follow these steps:
 
-- **Java 11** or higher
-- **Gradle 7.0** or higher (or use the provided Gradle wrapper)
+### 1. Prerequisites
+- **Java 11** or higher.
+- **Python 3.10** or higher.
+- **Gradle** (already included via the `./gradlew` wrapper).
 
-### Build
-
-Build the project and compile all code:
-
+### 2. Basic Compilation & Unit Tests
+Run the basic checks to ensure your code is syntactically correct:
 ```bash
+# Unix/Mac/Git Bash
 ./gradlew build
-```
-
-Or on Windows:
-
-```cmd
-gradlew.bat build
-```
-
-### Run Tests
-
-Execute all JUnit tests:
-
-```bash
 ./gradlew test
+
+# Windows (PowerShell)
+.\gradlew.bat build
+.\gradlew.bat test
 ```
 
-View test results in `build/reports/tests/test/index.html`
+### 3. Running the Full Autograder
+The autograder performs integration tests, checking for parallel execution timing and failure recovery. **Note: A simple implementation that runs sequentially will not pass these tests.**
 
-### Clean Build
-
-Remove build artifacts:
-
+#### On Linux / Mac / Git Bash (Recommended):
 ```bash
-./gradlew clean
+chmod +x autograder/run_autograder.sh
+bash autograder/run_autograder.sh
 ```
 
-### Run Specific Test
-
-Run a specific test class:
-
-```bash
-./gradlew test --tests MasterTest
-./gradlew test --tests WorkerTest
+#### On Windows (PowerShell):
+```powershell
+python autograder/grade.py
 ```
-
----
-
-## Running the Code
-
-### From Command Line
-
-Compile and run a main class:
-
-```bash
-./gradlew run
-```
-
-### From an IDE
-
-1. Open the project in IntelliJ IDEA, Eclipse, or VS Code
-2. Right-click on any Java file and select "Run"
-3. Run tests individually or as a suite
-
----
-
-## Test Cases
-
-### MasterTest
-
-- `testSumMatrix_SimpleCase()`: Tests 2x2 matrix summation
-- `testSumMatrix_SingleElement()`: Tests single element matrix
-- `testSumMatrix_ZeroMatrix()`: Tests zero matrix
-- `testMultiplyMatrices_IdentityMultiplication()`: Tests identity matrix multiplication
-- `testMultiplyMatrices_SimpleMultiplication()`: Tests basic matrix multiplication
-- `testProcessDistributed_ValidInput()`: Tests distributed processing
-
-### WorkerTest
-
-- `testWorkerCreation()`: Tests Worker instantiation
-- `testAssignData()`: Tests data assignment
-- `testProcessData()`: Tests processing without exceptions
-- `testGetResult()`: Tests result retrieval
-- `testMultipleWorkers()`: Tests multiple worker instances
-
----
-
-## GitHub Actions CI/CD
-
-The project includes an automated testing pipeline (`.github/workflows/autograde.yml`) that:
-
-1. **Triggers on**: Push to `main` branch and pull requests
-2. **Environment**: Ubuntu latest with JDK 20
-3. **Steps**:
-   - Checks out code
-   - Sets up Java
-   - Builds with Gradle
-   - Runs all tests
-   - Generates test reports
-
-Test results appear in the GitHub Actions tab of your repository.
 
 ---
 
 ## Grading Criteria
 
-Your implementation will be evaluated on:
+The autograder calculates your score based on:
+- **Protocol Compliance (20%)**: Does your `Message` class follow the CSM218 schema?
+- **IPC Communication (20%)**: Do Master and Worker communicate via your custom wire format?
+- **Parallel Execution (20%)**: Does the system actually speed up when more workers are added?
+- **Failure Recovery (20%)**: Does the system survive if a worker process is killed?
+- **Concurrency (20%)**: Are you using thread-safe collections and proper synchronization?
 
-1. **Correctness** (60%): Tests pass and produce correct results
-2. **Parallelism** (20%): Effective use of multiple workers
-3. **Code Quality** (10%): Clean, readable, well-documented code
-4. **Thread Safety** (10%): Proper synchronization and message passing
-
----
-
-## Example Usage
-
-```java
-// Create a master coordinator
-Master master = new Master();
-
-// Generate a test matrix
-int[][] matrix = MatrixGenerator.generateRandomMatrix(100, 100, 1000);
-
-// Compute sum
-int sum = master.sumMatrix(matrix);
-System.out.println("Matrix sum: " + sum);
-
-// Process distributed with 4 workers
-Object result = master.processDistributed(matrix, 4);
-
-// Multiply matrices
-int[][] matrixB = MatrixGenerator.generateIdentityMatrix(100);
-int[][] product = master.multiplyMatrices(matrix, matrixB);
-```
+**Final Mark**: Your score in the GitHub Classroom dashboard is based on these tests. You need at least **60%** to pass this assignment.
 
 ---
 
-## Troubleshooting
+## Student Workflow (Step-by-Step)
 
-| Issue                        | Solution                                                   |
-| ---------------------------- | ---------------------------------------------------------- |
-| "gradlew: command not found" | Run `chmod +x gradlew` on Linux/Mac                        |
-| Tests fail to compile        | Check Java version: `java -version` (need 11+)             |
-| Import errors in IDE         | Run `./gradlew build` first to download dependencies       |
-| Tests don't run              | Verify JUnit 5 is in classpath via `./gradlew test --info` |
+To successfully complete this assignment, follow these steps:
+
+### 1. Accept & Clone
+1.  **Accept the Assignment** via the GitHub Classroom link provided by your instructor.
+2.  **Clone your repository** to your local machine:
+    ```bash
+    git clone <your-repo-url>
+    cd <your-repo-folder>
+    ```
+
+### 2. Implementation Phase
+1.  **Design your Protocol**: Start by implementing the `pack` and `unpack` methods in `src/main/java/pdc/Message.java`. You must decide how to handle message boundaries in a TCP stream.
+2.  **Scaffold the Master & Worker**:
+    *   Initialize the `ServerSocket` in `Master.java`.
+    *   Implement the connection logic in `Worker.java`.
+3.  **Implement Logic**: Complete the `coordinate` and `execute` methods to perform parallel matrix operations.
+
+### 3. Local Verification
+Before pushing, run the autograder locally to check your progress:
+- **Architecture Check**: `bash autograder/run_autograder.sh --type static`
+- **Full Test**: `bash autograder/run_autograder.sh`
+
+### 4. Commit & Push
+When you are satisfied with your local score:
+1.  **Stage your changes**: `git add src/main/java/pdc/*.java`
+2.  **Commit**: `git commit -m "feat: implement robust failure handling and custom protocol"`
+3.  **Push**: `git push origin main`
+
+### 5. Check Results
+1.  Go to your repository on GitHub.
+2.  Click on the **Actions** tab to see your autograding run.
+3.  Once the run is complete, your grade will be visible in the **GitHub Classroom Dashboard**.
 
 ---
-
-## Resources
-
-- [Java Documentation](https://docs.oracle.com/javase/11/)
-- [JUnit 5 User Guide](https://junit.org/junit5/docs/current/user-guide/)
-- [Gradle Documentation](https://docs.gradle.org/)
-- [Java Concurrency](https://docs.oracle.com/javase/tutorial/essential/concurrency/)
-
----
-
-## License
-
-This project is for educational purposes in the PDC course.
-
-# parallel-distributed-assignment
-
-SCS 4212 Assignment February 2026
