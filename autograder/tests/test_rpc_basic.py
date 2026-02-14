@@ -3,6 +3,7 @@ import subprocess
 import time
 import socket
 import threading
+import os
 from pathlib import Path
 
 class AutograderTest:
