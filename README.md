@@ -219,3 +219,7 @@ int[][] product = master.multiplyMatrices(matrix, matrixB);
 ## License
 
 This project is for educational purposes in the PDC course.
+
+# parallel-distributed-assignment
+
+SCS 4212 Assignment February 2026
