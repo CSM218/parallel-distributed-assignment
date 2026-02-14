@@ -166,7 +166,11 @@ class Grader:
         }
         
         self.output_results(results)
-        print(f"\n=== Final Score: {final_score:.2f}% ===")
+        print(f"\nStatus: {status}")
+        print(f"=== Final Score: {final_score:.2f}% ===")
+        
+        if status == "FAIL":
+            sys.exit(1)
     
     def output_results(self, results):
         """Output results as JSON"""

@@ -5,7 +5,7 @@
       "setup": "chmod +x autograder/run_autograder.sh",
       "run": "bash autograder/run_autograder.sh",
       "input": "",
-      "output": "",
+      "output": "Status: PASS",
       "comparison": "included",
       "timeout": 10,
       "points": 100
